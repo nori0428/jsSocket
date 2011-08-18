@@ -50,7 +50,7 @@ var jsSSLSocket;
                  port = parseInt(args.port, 10);
              } else {
                  port = parseInt(location.port) ||
-                     (scheme.match(/wss/) ? 443 : 80);
+                     (scheme.match(/wss:/) ? 443 : 80);
              }
              path = (args && args.path) ? args.path : '';
              path = path.match(/^\//) ? path : '/' + path;
