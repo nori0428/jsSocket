@@ -136,81 +136,82 @@
 <span class='line'>129</span> </span><span class="WHIT">             </span><span class="COMM">/**
 <span class='line'>130</span>               * connect to a server
 <span class='line'>131</span>               * @memberOf _jsSocket.prototype
-<span class='line'>132</span>               * @param {string} host FQDN or IPAddr
-<span class='line'>133</span>               * @param {Number} port port number
-<span class='line'>134</span>               * @param {string} path path
-<span class='line'>135</span>               */</span><span class="WHIT">
-<span class='line'>136</span> </span><span class="WHIT">             </span><span class="NAME">connect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">host</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">port</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>137</span> </span><span class="WHIT">                 </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">url</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">makeURL</span><span class="PUNC">(</span><span class="NAME">host</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">port</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>138</span> 
-<span class='line'>139</span> </span><span class="WHIT">                 </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>140</span> </span><span class="WHIT">                     </span><span class="NAME">sock</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">WebSocket</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>141</span> </span><span class="WHIT">                 </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">x</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>142</span> </span><span class="WHIT">                     </span><span class="NAME">onerror</span><span class="PUNC">(</span><span class="NAME">x</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>143</span> </span><span class="WHIT">                     </span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>144</span> </span><span class="WHIT">                 </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>145</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onopen</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onopen</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>146</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onmessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onmessage</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>147</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onerror</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onerror</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>148</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onclose</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onclose</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>149</span> </span><span class="WHIT">             </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>150</span> </span><span class="WHIT">             </span><span class="COMM">/**
-<span class='line'>151</span>               * disconnect from a server
-<span class='line'>152</span>               * @memberOf _jsSocket.prototype
-<span class='line'>153</span>               */</span><span class="WHIT">
-<span class='line'>154</span> </span><span class="WHIT">             </span><span class="NAME">disconnect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>155</span> </span><span class="WHIT">                 </span><span class="NAME">sock</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">sock.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>156</span> </span><span class="WHIT">             </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>157</span> </span><span class="WHIT">             </span><span class="COMM">/**
-<span class='line'>158</span>               * fire when connected a server
-<span class='line'>159</span>               * @name _jsSocket#onopen
-<span class='line'>160</span>               * @event
-<span class='line'>161</span>               * @param {Event} e Event object
-<span class='line'>162</span>               */</span><span class="WHIT">
-<span class='line'>163</span> </span><span class="WHIT">             </span><span class="COMM">/**
-<span class='line'>164</span>               * fire when received message from a server
-<span class='line'>165</span>               * @name _jsSocket#onmessage
-<span class='line'>166</span>               * @event
-<span class='line'>167</span>               * @param {MessageEvent} e MessageEvent object
-<span class='line'>168</span>               */</span><span class="WHIT">
-<span class='line'>169</span> </span><span class="WHIT">             </span><span class="COMM">/**
-<span class='line'>170</span>               * fire when occured an error
-<span class='line'>171</span>               * @name _jsSocket#onerror
-<span class='line'>172</span>               * @event
-<span class='line'>173</span>               * @param {Error} e Error object
-<span class='line'>174</span>               */</span><span class="WHIT">
-<span class='line'>175</span> </span><span class="WHIT">             </span><span class="COMM">/**
-<span class='line'>176</span>               * fire when disconnected from a server
-<span class='line'>177</span>               * @name _jsSocket#onclose
-<span class='line'>178</span>               * @event
-<span class='line'>179</span>               * @param {CloseEvent} e CloseEvent object
-<span class='line'>180</span>               */</span><span class="WHIT">
-<span class='line'>181</span> </span><span class="WHIT">         </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>182</span> </span><span class="WHIT">         </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_jsSocket</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>183</span> </span><span class="WHIT">     </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>184</span> </span><span class="WHIT">     </span><span class="COMM">/**
-<span class='line'>185</span>       * Socket Class
-<span class='line'>186</span>       * @constructor
-<span class='line'>187</span>       * @augments _jsSocket
-<span class='line'>188</span>       * @param {string} [type] 'text' or 'binary'&lt;br>
-<span class='line'>189</span>       * 'text' as default
-<span class='line'>190</span>       */</span><span class="WHIT">
-<span class='line'>191</span> </span><span class="WHIT">     </span><span class="NAME">jsSocket</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jsSocket</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
-<span class='line'>192</span> </span><span class="WHIT">         </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>193</span> </span><span class="WHIT">             </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">makeSocket</span><span class="PUNC">(</span><span class="STRN">'ws:'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>194</span> </span><span class="WHIT">         </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>195</span> </span><span class="WHIT">     </span><span class="COMM">/**
-<span class='line'>196</span>       * SSL Socket Class
-<span class='line'>197</span>       * @constructor
-<span class='line'>198</span>       * @augments _jsSocket
-<span class='line'>199</span>       * @param {string} [type] 'text' or 'binary'&lt;br>
-<span class='line'>200</span>       * 'text' as default
-<span class='line'>201</span>       */</span><span class="WHIT">
-<span class='line'>202</span> </span><span class="WHIT">     </span><span class="NAME">jsSSLSocket</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jsSSLSocket</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> 
-<span class='line'>203</span>          </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>204</span> </span><span class="WHIT">             </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">makeSocket</span><span class="PUNC">(</span><span class="STRN">'wss:'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>205</span> </span><span class="WHIT">         </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>206</span> </span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>207</span> 
-<span class='line'>208</span> </span><span class="COMM">/* EOF */</span><span class="WHIT">
-<span class='line'>209</span> </span></pre></body></html>
+<span class='line'>132</span>               * @param {json} args
+<span class='line'>133</span>               * @param {string} args.host FQDN or IPAddr
+<span class='line'>134</span>               * @param {Number} [args.port] port number
+<span class='line'>135</span>               * @param {string} args.path path
+<span class='line'>136</span>               */</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">             </span><span class="NAME">connect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">                 </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">url</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">makeURL</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>139</span> 
+<span class='line'>140</span> </span><span class="WHIT">                 </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">                     </span><span class="NAME">sock</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">WebSocket</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">                 </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">x</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">                     </span><span class="NAME">onerror</span><span class="PUNC">(</span><span class="NAME">x</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">                     </span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">                 </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onopen</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onopen</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onmessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onmessage</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onerror</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onerror</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">                 </span><span class="NAME">sock.onclose</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">onclose</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">             </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>151</span> </span><span class="WHIT">             </span><span class="COMM">/**
+<span class='line'>152</span>               * disconnect from a server
+<span class='line'>153</span>               * @memberOf _jsSocket.prototype
+<span class='line'>154</span>               */</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">             </span><span class="NAME">disconnect</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">                 </span><span class="NAME">sock</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">sock.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">             </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">             </span><span class="COMM">/**
+<span class='line'>159</span>               * fire when connected a server
+<span class='line'>160</span>               * @name _jsSocket#onopen
+<span class='line'>161</span>               * @event
+<span class='line'>162</span>               * @param {Event} e Event object
+<span class='line'>163</span>               */</span><span class="WHIT">
+<span class='line'>164</span> </span><span class="WHIT">             </span><span class="COMM">/**
+<span class='line'>165</span>               * fire when received message from a server
+<span class='line'>166</span>               * @name _jsSocket#onmessage
+<span class='line'>167</span>               * @event
+<span class='line'>168</span>               * @param {MessageEvent} e MessageEvent object
+<span class='line'>169</span>               */</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">             </span><span class="COMM">/**
+<span class='line'>171</span>               * fire when occured an error
+<span class='line'>172</span>               * @name _jsSocket#onerror
+<span class='line'>173</span>               * @event
+<span class='line'>174</span>               * @param {Error} e Error object
+<span class='line'>175</span>               */</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">             </span><span class="COMM">/**
+<span class='line'>177</span>               * fire when disconnected from a server
+<span class='line'>178</span>               * @name _jsSocket#onclose
+<span class='line'>179</span>               * @event
+<span class='line'>180</span>               * @param {CloseEvent} e CloseEvent object
+<span class='line'>181</span>               */</span><span class="WHIT">
+<span class='line'>182</span> </span><span class="WHIT">         </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>183</span> </span><span class="WHIT">         </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_jsSocket</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>184</span> </span><span class="WHIT">     </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="WHIT">     </span><span class="COMM">/**
+<span class='line'>186</span>       * Socket Class
+<span class='line'>187</span>       * @constructor
+<span class='line'>188</span>       * @augments _jsSocket
+<span class='line'>189</span>       * @param {string} [type] 'text' or 'binary'&lt;br>
+<span class='line'>190</span>       * 'text' as default
+<span class='line'>191</span>       */</span><span class="WHIT">
+<span class='line'>192</span> </span><span class="WHIT">     </span><span class="NAME">jsSocket</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jsSocket</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
+<span class='line'>193</span> </span><span class="WHIT">         </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>194</span> </span><span class="WHIT">             </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">makeSocket</span><span class="PUNC">(</span><span class="STRN">'ws:'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">         </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>196</span> </span><span class="WHIT">     </span><span class="COMM">/**
+<span class='line'>197</span>       * SSL Socket Class
+<span class='line'>198</span>       * @constructor
+<span class='line'>199</span>       * @augments _jsSocket
+<span class='line'>200</span>       * @param {string} [type] 'text' or 'binary'&lt;br>
+<span class='line'>201</span>       * 'text' as default
+<span class='line'>202</span>       */</span><span class="WHIT">
+<span class='line'>203</span> </span><span class="WHIT">     </span><span class="NAME">jsSSLSocket</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jsSSLSocket</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> 
+<span class='line'>204</span>          </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>205</span> </span><span class="WHIT">             </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">makeSocket</span><span class="PUNC">(</span><span class="STRN">'wss:'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>206</span> </span><span class="WHIT">         </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>207</span> </span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>208</span> 
+<span class='line'>209</span> </span><span class="COMM">/* EOF */</span><span class="WHIT">
+<span class='line'>210</span> </span></pre></body></html>

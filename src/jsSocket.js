@@ -129,12 +129,13 @@ var jsSSLSocket;
              /**
               * connect to a server
               * @memberOf _jsSocket.prototype
-              * @param {string} host FQDN or IPAddr
-              * @param {Number} port port number
-              * @param {string} path path
+              * @param {json} args
+              * @param {string} args.host FQDN or IPAddr
+              * @param {Number} [args.port] port number
+              * @param {string} args.path path
               */
-             connect: function(host, port, path) {
-                 var url = makeURL(host, port, path);
+             connect: function(args) {
+                 var url = makeURL(args);
 
                  try {
                      sock = new WebSocket(url);
