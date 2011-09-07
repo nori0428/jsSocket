@@ -124,7 +124,15 @@ var jsSSLSocket;
               * @return data
               */
              recv: function(len) {
-                 return rbuf.get(len);
+                 var d = rbuf.get(len);
+
+                 if (rbuf.length > 0) {
+                     setTimeout(function() {
+                                    _jsSocket.onmessage &&
+                                    _jsSocket.onmessage(_jsSocket);
+                                }, 0);
+                 }
+                 return d;
              },
              /**
               * connect to a server
@@ -163,6 +171,7 @@ var jsSSLSocket;
               */
              /**
               * fire when received message from a server
+              * or messages exist in read queue
               * @name _jsSocket#onmessage
               * @event
               * @param {MessageEvent} e MessageEvent object
