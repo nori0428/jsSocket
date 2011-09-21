@@ -14,14 +14,16 @@ var jsSSLSocket;
              get: function(len) {
                  var data, datalen;
 
-                 len = len || 1;
+                 if (this.length == 0 || len == 0) {
+                     return '';
+                 }
                  datalen = (buffer.length > len) ? len : buffer.length;
                  data = buffer.slice(0, datalen);
                  buffer = buffer.slice(datalen);
                  this.length = buffer.length;
                  return data;
              },
-             put: function(buf, len) {
+             put: function(buf) {
                  buffer = buffer.concat(buf);
                  this.length = buffer.length;
              },
@@ -32,8 +34,51 @@ var jsSSLSocket;
          };
      };
 
+     var arrayBuffer = function() {
+         var buffer;
+
+         return {
+             length: 0,
+             get: function(len) {
+                 var data, datalen;
+
+                 if (typeof buffer === 'undefined' ||
+                     this.length == 0 || len == 0) {
+                     return undefined;
+                 }
+                 datalen = (this.length > len) ? len : this.length;
+                 data = buffer.subarray(0, datalen);
+                 buffer = buffer.subarray(datalen);
+                 this.length = buffer.byteLength;
+                 return data;
+             },
+             put: function(buf) {
+                 var tmp;
+                 var u8a = new Uint8Array(buf);
+
+                 if (typeof buffer === 'undefined') {
+                     buffer = u8a;
+                 } else {
+                     tmp = new Uint8Array(this.length + u8a.byteLength);
+                     tmp.set(buffer);
+                     tmp.set(u8a, this.length);
+                     delete buffer;
+                     buffer = tmp;
+                     delete tmp;
+                 }
+                 delete u8a;
+                 this.length = buffer.byteLength;
+             },
+             clear: function() {
+                 delete buffer;
+                 buffer = undefined;
+                 this.length = 0;
+             }
+         };
+     };
+
      function makeSocket(scheme, type) {
-         var sock, _jsSocket, rbuf, wbuf;
+         var sock, _jsSocket, rbuf, wbuf, callbacked = false;
 
          function makeURL(args) {
              var host, port, path, url;
@@ -69,7 +114,10 @@ var jsSSLSocket;
 
          function onmessage(e) {
              rbuf.put(e.data);
-             _jsSocket.onmessage && _jsSocket.onmessage(_jsSocket);
+             if (_jsSocket.onmessage && !callbacked) {
+                 callbacked = true;
+                 _jsSocket.onmessage(_jsSocket);
+             }
          }
 
          function onerror(e) {
@@ -89,15 +137,16 @@ var jsSSLSocket;
 
          function doSend() {
              if (sock.bufferedAmount == 0) {
-                 sock.send(wbuf.get(wbuf.length));
+                 sock.send(wbuf.get(wbuf.length).buffer);
                  wbuf.clear();
              } else {
-                 setTimeout(doSend, 50, false);
+                 setTimeout(doSend, 50);
              }
          }
 
          if (type === 'binary') {
-             ; // make ArrayBuffer
+             rbuf = new arrayBuffer();
+             wbuf = new arrayBuffer();
          } else {
              rbuf = new charBuffer();
              wbuf = new charBuffer();
@@ -111,26 +160,31 @@ var jsSSLSocket;
               * send data
               * @memberOf _jsSocket.prototype
               * @param buf data to send
-              * @param [len] data length
               */
-             send: function(buf, len) {
-                 wbuf.put(buf, len);
+             send: function(buf) {
+                 wbuf.put(buf);
                  doSend();
              },
              /**
               * receive data
               * @memberOf _jsSocket.prototype
               * @param len data length
-              * @return data
+              * @return {string || Uint8Array} data
+              * <p>
+              * returns 'string' when sock type === 'text'<br>
+              * returns 'Uint8Array' Object when sock type === 'binary'
               */
              recv: function(len) {
-                 var d = rbuf.get(len);
+                 var d;
 
+                 d = rbuf.get(len);
                  if (rbuf.length > 0) {
                      setTimeout(function() {
                                     _jsSocket.onmessage &&
                                     _jsSocket.onmessage(_jsSocket);
                                 }, 0);
+                 } else {
+                     callbacked = false;
                  }
                  return d;
              },
@@ -138,18 +192,27 @@ var jsSSLSocket;
               * connect to a server
               * @memberOf _jsSocket.prototype
               * @param {json} args
-              * @param {string} args.host FQDN or IPAddr
-              * @param {Number} [args.port] port number
+              * @param {string} [args.host] FQDN or IPAddr<br>
+              * used location.hostname by default
+              * @param {Number} [args.port] port number<br>
+              * used location.port by default
               * @param {string} args.path path
               */
              connect: function(args) {
                  var url = makeURL(args);
 
                  try {
-                     sock = new WebSocket(url);
+                     if (window.WebSocket) {
+                         sock = new WebSocket(url);
+                     } else if (window.MozWebSocket) {
+                         sock = new MozWebSocket(url);
+                     }
                  } catch (x) {
                      onerror(x);
                      return;
+                 }
+                 if (type === 'binary') {
+                     sock.binaryType = 'arraybuffer';
                  }
                  sock.onopen = onopen;
                  sock.onmessage = onmessage;
