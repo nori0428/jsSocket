@@ -10,12 +10,12 @@ var jsSSLSocket;
          var buffer = '';
 
          return {
-             length: buffer.length,
+             length: 0,
              get: function(len) {
                  var data, datalen;
 
                  if (this.length == 0 || len == 0) {
-                     return '';
+                     return undefined;
                  }
                  datalen = (buffer.length > len) ? len : buffer.length;
                  data = buffer.slice(0, datalen);
@@ -42,35 +42,32 @@ var jsSSLSocket;
              get: function(len) {
                  var data, datalen;
 
-                 if (typeof buffer === 'undefined' ||
-                     this.length == 0 || len == 0) {
+                 if (!buffer || this.length == 0 || len == 0) {
                      return undefined;
                  }
                  datalen = (this.length > len) ? len : this.length;
                  data = buffer.subarray(0, datalen);
                  buffer = buffer.subarray(datalen);
-                 this.length = buffer.byteLength;
+                 this.length = buffer.length;
+                 if (buffer.length == 0) {
+                     buffer = undefined;
+                 }
                  return data;
              },
              put: function(buf) {
-                 var tmp;
-                 var u8a = new Uint8Array(buf);
+                 var tmp, u8a = new Uint8Array(buf);
 
-                 if (typeof buffer === 'undefined') {
+                 if (!buffer) {
                      buffer = u8a;
                  } else {
-                     tmp = new Uint8Array(this.length + u8a.byteLength);
+                     tmp = new Uint8Array(this.length + u8a.length);
                      tmp.set(buffer);
                      tmp.set(u8a, this.length);
-                     delete buffer;
                      buffer = tmp;
-                     delete tmp;
                  }
-                 delete u8a;
-                 this.length = buffer.byteLength;
+                 this.length = buffer.length;
              },
              clear: function() {
-                 delete buffer;
                  buffer = undefined;
                  this.length = 0;
              }
@@ -136,9 +133,18 @@ var jsSSLSocket;
          }
 
          function doSend() {
+             var buf;
+
              if (sock.bufferedAmount == 0) {
-                 sock.send(wbuf.get(wbuf.length).buffer);
-                 wbuf.clear();
+                 buf = wbuf.get(wbuf.length);
+                 if (!buf) {
+                     return;
+                 }
+                 if (typeof buf === 'string') {
+                     sock.send(buf);
+                 } else { // arrayBuffer
+                     sock.send(buf.buffer);
+                 }
              } else {
                  setTimeout(doSend, 50);
              }
@@ -169,7 +175,7 @@ var jsSSLSocket;
               * receive data
               * @memberOf _jsSocket.prototype
               * @param len data length
-              * @return {string || Uint8Array} data
+              * @return {undefined || string || Uint8Array} data
               * <p>
               * returns 'string' when sock type === 'text'<br>
               * returns 'Uint8Array' Object when sock type === 'binary'
