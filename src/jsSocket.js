@@ -111,8 +111,7 @@ var jsSSLSocket;
 
          function onmessage(e) {
              rbuf.put(e.data);
-             if (_jsSocket.onmessage && !callbacked) {
-                 callbacked = true;
+             if (_jsSocket.onmessage) {
                  _jsSocket.onmessage(_jsSocket);
              }
          }
@@ -162,6 +161,7 @@ var jsSSLSocket;
           * @namespace
           */
          _jsSocket = {
+             tid: 0,
              /**
               * send data
               * @memberOf _jsSocket.prototype
@@ -185,12 +185,17 @@ var jsSSLSocket;
 
                  d = rbuf.get(len);
                  if (rbuf.length > 0) {
-                     setTimeout(function() {
-                                    _jsSocket.onmessage &&
-                                    _jsSocket.onmessage(_jsSocket);
-                                }, 0);
+                     if (this.tid) {
+                         return d;
+                     }
+                     this.tid = setTimeout(function() {
+                                               _jsSocket.tid = 0;
+                                               _jsSocket.onmessage &&
+                                               _jsSocket.onmessage(_jsSocket);
+                                           }, 0);
                  } else {
-                     callbacked = false;
+                     clearTimeout(this.tid);
+                     this.tid = 0;
                  }
                  return d;
              },
